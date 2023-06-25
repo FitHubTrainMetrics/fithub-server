@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define o modelo de usuário
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação com os treinos
+  workouts  Workout[]
+  // Relação com as avaliações físicas
+  assessments Assessment[]
+}
+
+// Define o modelo de treino
+model Workout {
+  id        Int      @id @default(autoincrement())
+  title     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação com o usuário
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// Define o modelo de avaliação física
+model Assessment {
+  id        Int      @id @default(autoincrement())
+  weight    Float
+  height    Float
+  bodyFat   Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação com o usuário
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
