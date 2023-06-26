@@ -19,8 +19,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relação com os treinos
-  workouts  Workout[]
+  // Relação com os treinos como personal trainer
+  personalTrainerWorkouts Workout[] @relation("PersonalTrainerWorkouts")
+
+  // Relação com os treinos como aluno
+  studentWorkouts Workout[] @relation("StudentWorkouts")
+
   // Relação com as avaliações físicas
   assessments Assessment[]
 }
@@ -32,9 +36,13 @@ model Workout {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relação com o usuário
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  // Relação com o personal trainer
+  personalTrainer User   @relation("PersonalTrainerWorkouts", fields: [personalTrainerId], references: [id])
+  personalTrainerId Int
+
+  // Relação com o aluno
+  student User   @relation("StudentWorkouts", fields: [studentId], references: [id])
+  studentId Int
 }
 
 // Define o modelo de avaliação física
@@ -46,7 +54,7 @@ model Assessment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relação com o usuário
-  userId    Int
+  // Relação com o usuário (aluno)
   user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
